@@ -219,16 +219,15 @@ EKS 업그레이드 관련 카드 다 보여줘
 | `작업명` | title | `[프로젝트] 한 줄 요약` |
 | `상태` | select | `Backlog` `계획` `진행중` `검증` `완료` `중단/실패` — 칸반 레인 |
 | `에이전트` | select | `Claude Code` `Codex` `Gemini CLI` `Cursor` `사람` `기타` |
-| `모델` | text | 실제 모델명 |
+| `모델` | select | `claude-opus-5` `claude-sonnet-5` `claude-haiku-4-5` `claude-fable-5` `gpt-5.6` `기타` |
 | `프로젝트` | select | 사용자 정의 (설치 시 교체) |
 | `유형` | multi_select | `구축` `운영` `조사/분석` `문서` `버그수정` `자동화` `리팩토링` `설정/환경` |
 | `우선순위` | select | `P0`–`P3` |
 | `결과` | select | `성공` `부분성공` `실패` `롤백` — 종료 시점에만 |
-| `사람검토` | checkbox | 사람이 확인했는지 |
 | `시작` `완료일` | date | |
 | `작업경로` | text | repo 또는 cwd |
-| `태그` | text | `작업경로` 에서 파생한 슬러그 — 필터 키 (아래) |
-| `브랜치/커밋` | text | |
+| `태그` | select | `작업경로` 에서 파생한 슬러그 — 필터/그룹 키 (아래) |
+| `브랜치/커밋` | text | `main@0e89e71` 형식, 커밋 URL 하이퍼링크 |
 | `세션ID` | text | 원본 로그 추적용 |
 | `참고링크` | url | PR, 이슈, 문서 |
 
@@ -247,11 +246,30 @@ git 레포면 최상위 경로, 아니면 cwd의 basename을 소문자·하이�
 `작업경로` 는 절대경로라 머신·worktree마다 달라지지만 `태그` 는 안정적이라
 Notion 보드에서 필터·그룹 키로 쓸 수 있다.
 
+**select 속성이므로** 새 레포에서 처음 기록할 때만 옵션이 추가되고, 이후에는 재사용된다.
+옵션이 레포 수만큼만 늘어나 몇 개 수준에서 안정된다.
+`작업경로` 를 text로 남겨 둔 것은 절대경로가 길어 칩 UI에 맞지 않기 때문이다 —
+정확한 위치는 `작업경로`, 묶어 보기는 `태그` 가 담당한다.
+
 ```
 notion-worklog-plugin 태그 붙은 카드만 보여줘
 ```
 
 규칙 전문은 [`schema.md`](skills/notion-worklog-skill/references/schema.md) 의 "태그 규칙" 절에 있다.
+
+### 브랜치/커밋 — 커밋으로 바로 가기
+
+`브랜치@짧은해시` 를 표시하고 실제 커밋으로 링크한다.
+Notion 텍스트 속성은 마크다운을 해석하므로 `[표시](URL)` 이 하이퍼링크가 된다.
+
+| 상황 | 기록되는 값 |
+|---|---|
+| 원격이 있는 git 레포 | [`main@0e89e71`](https://github.com/mchlkim/notion-worklog-plugin/commit/0e89e714e971cb3a7a181214363337195dd7a1dc) — 클릭하면 커밋으로 |
+| 원격 없는 로컬 레포 | `main@0e89e71` (링크 없이) |
+| git 레포가 아님 | 비워 둔다 |
+
+원격 URL은 `git remote get-url origin` 을 웹 URL로 정규화해 만든다
+(`git@host:o/r.git` → `https://host/o/r`).
 
 카드 본문은 `1. 계획` / `2. 실행` / `3. 결과` / `4. 배운 점` 네 섹션 고정이다
 ([`card-template.md`](skills/notion-worklog-skill/assets/card-template.md)).
@@ -331,6 +349,26 @@ claude plugin tag                   # plugin.json 과 마켓플레이스 항목�
 ---
 
 ## 업그레이드
+
+### 1.2.x → 1.3.0 — 속성 타입 변경 및 `사람검토` 제거
+
+에이전트에게 시키면 된다:
+
+```
+작업 기록 DB 스키마를 1.3.0 에 맞춰 갱신해줘
+```
+
+수동으로 하려면 `notion-update-data-source` 에 이렇게 넘긴다 —
+**기존 옵션을 빠뜨리면 그 값들이 사라지니** 현재 값을 먼저 조회할 것:
+
+```sql
+ALTER COLUMN "태그" SET SELECT('현재 쓰는 태그들…');
+ALTER COLUMN "모델" SET SELECT('claude-opus-5':orange, 'claude-sonnet-5':blue, 'gpt-5.6':gray, '기타':default);
+DROP COLUMN "사람검토"
+```
+
+`ALTER ... SET SELECT` 는 옵션명이 같으면 기존 카드의 값을 유지한다.
+`사람검토` 를 없애도 "`완료` 는 사람이 확인한 뒤" 원칙은 그대로다 — 체크박스가 아니라 절차로 지킨다.
 
 ### 1.1.x → 1.2.0 — `태그` 속성 추가
 
