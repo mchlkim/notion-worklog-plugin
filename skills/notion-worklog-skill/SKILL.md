@@ -4,7 +4,7 @@ description: Use when starting, progressing, or finishing a multi-step task that
 compatibility: Requires a connected Notion MCP server (https://mcp.notion.com/mcp) with write access to the target database.
 metadata:
   author: mchlkim
-  version: "1.0"
+  version: "1.3.0"
 ---
 
 # Notion Worklog Skill

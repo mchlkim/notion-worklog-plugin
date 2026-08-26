@@ -136,14 +136,16 @@ worklog.config.json 을 갱신해줘
 
 [`skills/notion-worklog-skill/assets/worklog.config.json`](skills/notion-worklog-skill/assets/worklog.config.json)
 
+배포본은 값이 비어 있다. `bootstrap.md` 로 DB를 만든 뒤 채우거나 환경변수로 둔다.
+
 ```json
 {
   "notion": {
-    "workspace": "<워크스페이스 이름>",
-    "pageUrl": "<부모 페이지 URL>",
-    "databaseUrl": "<DB URL>",
-    "databaseId": "<database id>",
-    "dataSourceId": "<data source id>"
+    "workspace": "",
+    "pageUrl": "",
+    "databaseUrl": "",
+    "databaseId": "",
+    "dataSourceId": ""
   },
   "defaults": {
     "priority": "P2",
@@ -171,9 +173,10 @@ worklog.config.json 을 갱신해줘
 달릴 수 있어서, 카드를 만들 때는 데이터소스 ID가 필요하다.
 `notion-fetch` 로 DB를 조회하면 `collection://<data_source_id>` 형태로 나온다.
 
-### 프로젝트 태그 바꾸기
+### 프로젝트 옵션 바꾸기
 
 `프로젝트` 속성의 선택지는 쓰는 사람의 환경에 맞춰 바꾸는 값이다.
+경로에서 파생하는 `태그` 와는 별개 속성이다.
 [`bootstrap.md`](skills/notion-worklog-skill/references/bootstrap.md) 의 DDL과
 [`schema.md`](skills/notion-worklog-skill/references/schema.md) 의 허용값 표를 함께 고친다.
 두 파일이 어긋나면 에이전트가 없는 옵션을 쓰려다 실패한다.
@@ -185,7 +188,7 @@ worklog.config.json 을 갱신해줘
 ### 슬래시 커맨드 (Claude Code)
 
 ```bash
-/worklog-start [프로젝트] EKS 1.31 업그레이드      # 카드 생성, 상태=계획
+/worklog-start [프로젝트A] API 서버 v2 마이그레이션   # 카드 생성, 상태=계획
 /worklog-finish 성공                                # 결과 채우고 상태=검증
 ```
 
@@ -207,7 +210,7 @@ worklog.config.json 을 갱신해줘
 
 ```
 지난주에 무슨 작업 했었는지 보드에서 찾아줘
-EKS 업그레이드 관련 카드 다 보여줘
+API 서버 마이그레이션 관련 카드 다 보여줘
 ```
 
 ---
@@ -313,7 +316,7 @@ notion-worklog-plugin/
 └── README.md
 ```
 
-**매니페스트가 셋인 이유**: 세 클라이언트가 서로 다른 위치를 본다.
+**플러그인 매니페스트가 셋인 이유**: 세 클라이언트가 서로 다른 위치를 본다.
 표준은 루트 `plugin.json`, Claude Code는 `.claude-plugin/plugin.json`,
 Codex는 `.codex-plugin/plugin.json`.
 반면 **`skills/` 는 셋 다 같은 경로**를 쓰므로 스킬 본문은 하나만 유지된다.
@@ -370,16 +373,18 @@ DROP COLUMN "사람검토"
 `ALTER ... SET SELECT` 는 옵션명이 같으면 기존 카드의 값을 유지한다.
 `사람검토` 를 없애도 "`완료` 는 사람이 확인한 뒤" 원칙은 그대로다 — 체크박스가 아니라 절차로 지킨다.
 
-### 1.1.x → 1.2.0 — `태그` 속성 추가
+### 1.1.x 이하에서 올라오는 경우
 
-이미 DB를 만들어 쓰고 있다면 속성을 하나 추가해야 한다. 에이전트에게 시키면 된다:
+`태그` 속성 자체가 없으므로 **1.3.0 형태로 한 번에 추가**한다.
+(1.2.0 에서는 text 였지만 1.3.0 에서 select 로 바뀌었으니 중간 단계를 거칠 필요가 없다.)
 
+```sql
+ADD COLUMN "태그" SELECT('내-레포-이름':blue);
+ALTER COLUMN "모델" SET SELECT('claude-opus-5':orange, 'claude-sonnet-5':blue, 'gpt-5.6':gray, '기타':default);
+DROP COLUMN "사람검토"
 ```
-작업 기록 DB에 "태그" 텍스트 속성을 추가해줘
-```
 
-추가하지 않으면 카드 생성 시 해당 속성만 무시되거나 거부된다.
-기존 카드의 태그는 비어 있어도 무방하다 — 이후 생성분부터 채워진다.
+기존 카드의 `태그` 는 비어 있어도 무방하다 — 이후 생성분부터 채워진다.
 
 ---
 
@@ -390,7 +395,7 @@ DROP COLUMN "사람검토"
 | 카드가 안 만들어짐 | Notion MCP 미연결. 스킬이 조용히 넘어가지 않고 알리게 돼 있으니 메시지를 확인한다 |
 | 칸반에 레인이 일부만 보임 | Notion은 **카드 없는 그룹을 기본 숨김** 처리한다. 보드 뷰 설정에서 "빈 그룹 표시"를 켠다 |
 | 생성 직후 표 뷰가 먼저 뜸 | 기본 탭이 표 뷰다. UI에서 칸반 탭을 맨 앞으로 드래그한다 |
-| `프로젝트` 값이 거부됨 | DDL의 select 옵션에 없는 값. `bootstrap.md` 와 `schema.md` 를 함께 갱신한다 |
+| select 값이 거부됨 (`프로젝트`·`모델`·`태그`) | DDL의 옵션에 없는 값이다. `bootstrap.md` 와 `schema.md` 를 함께 갱신한다. `태그` 는 에이전트가 옵션을 추가해도 되지만 **기존 옵션을 전부 포함해서** `ALTER` 해야 한다 |
 | 날짜 속성이 안 들어감 | 클라이언트에 따라 `date:완료일:start` 형태의 확장 키가 필요하다. `notion-fetch` 로 SQLite 컬럼 정의를 먼저 확인한다 |
 | 이전 실행 로그가 사라짐 | `replace_content` 로 본문을 덮어썼을 때 생긴다. `update_content` 로 해당 섹션에만 append 해야 한다 |
 | Codex에서 수정이 반영 안 됨 | 캐시가 버전 단위라 같은 버전에선 갱신되지 않는다. `codex plugin remove` → `add` 로 재설치한다. 로컬 마켓플레이스에 `marketplace upgrade` 는 쓸 수 없다 (Git 전용) |
