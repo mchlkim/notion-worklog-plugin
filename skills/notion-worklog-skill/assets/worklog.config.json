@@ -1,0 +1,14 @@
+{
+  "$comment": "기록 대상 Notion DB. 최초 1회 references/bootstrap.md 로 DB를 만든 뒤 아래 값을 채운다. 환경변수 NOTION_WORKLOG_DATA_SOURCE_ID 가 있으면 그 값이 우선한다.",
+  "notion": {
+    "workspace": "",
+    "pageUrl": "",
+    "databaseUrl": "",
+    "databaseId": "",
+    "dataSourceId": ""
+  },
+  "defaults": {
+    "priority": "P2",
+    "project": "개인/샌드박스"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "mchlkim-agent-tools",
+  "description": "작업 이력을 Notion 칸반에 남기는 에이전트 플러그인. Claude Code·Codex 등 어떤 에이전트로 작업하든 같은 보드에 계획 → 실행 → 결과가 쌓입니다.",
+  "owner": {
+    "name": "mchlkim"
+  },
+  "interface": {
+    "displayName": "mchlkim Agent Tools"
+  },
+  "plugins": [
+    {
+      "name": "notion-worklog-plugin",
+      "source": ".",
+      "description": "에이전트의 계획/실행/결과를 Notion 칸반에 기록합니다.",
+      "version": "1.2.0",
+      "category": "productivity",
+      "tags": [
+        "notion",
+        "work-log",
+        "kanban",
+        "audit-trail"
+      ],
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      }
+    }
+  ]
+}

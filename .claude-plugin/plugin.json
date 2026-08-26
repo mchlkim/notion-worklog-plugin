@@ -1,0 +1,17 @@
+{
+  "name": "notion-worklog-plugin",
+  "displayName": "Notion Worklog",
+  "version": "1.2.0",
+  "description": "에이전트의 계획/실행/결과를 Notion 칸반에 기록합니다.",
+  "author": {
+    "name": "mchlkim"
+  },
+  "homepage": "https://github.com/mchlkim/notion-worklog-plugin",
+  "keywords": [
+    "notion",
+    "work-log",
+    "kanban",
+    "audit-trail"
+  ],
+  "license": "MIT"
+}

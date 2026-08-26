@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "notion-worklog-plugin",
+  "version": "1.2.0",
+  "description": "Records an agent's plan, execution, and result to a shared Notion kanban database so work by Claude Code, Codex, Cursor, and other agents lands on one auditable board.",
+  "author": {
+    "name": "mchlkim"
+  },
+  "homepage": "https://github.com/mchlkim/notion-worklog-plugin",
+  "repository": "https://github.com/mchlkim/notion-worklog-plugin.git",
+  "license": "MIT",
+  "keywords": [
+    "notion",
+    "work-log",
+    "kanban",
+    "audit-trail",
+    "agent-history",
+    "mcp"
+  ]
+}
