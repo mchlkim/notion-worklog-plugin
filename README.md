@@ -285,6 +285,10 @@ Notion 텍스트 속성은 마크다운을 해석하므로 `[표시](URL)` 이 �
 `2. 실행`·`4. 개선점`·`5. 출처`·`6. 산출물` 처럼 계속 덧붙는 목록은 불릿을 유지한다
 ([`card-template.md`](skills/notion-worklog-skill/assets/card-template.md)).
 
+`6. 산출물` 의 파일이 **10개를 넘으면 개별 경로를 나열하지 않는다** — `` `src/api/` — 12개 파일 ``
+처럼 디렉토리와 개수로 묶고 핵심 2~3개만 따로 짚는다. 전체 목록은 커밋·PR 링크가 대신하므로
+카드에 옮겨 적을 이유가 없다. 파일 수십 개짜리 리팩토링에서 카드 절반이 경로 목록이 되는 걸 막는다.
+
 전체 속성 정의와 MCP 호출 예시는
 [`references/schema.md`](skills/notion-worklog-skill/references/schema.md) 에 있다.
 

@@ -4,7 +4,7 @@ description: Use when starting, progressing, or finishing a multi-step task that
 compatibility: Requires a connected Notion MCP server (https://mcp.notion.com/mcp) with write access to the target database.
 metadata:
   author: mchlkim
-  version: "1.5.0"
+  version: "1.9.3"
 ---
 
 # Notion Worklog Skill
@@ -109,6 +109,10 @@ Notion MCP 서버(`https://mcp.notion.com/mcp`)의 도구를 쓴다.
 
 `5. 출처` 는 참고한 문서·스펙을 제목과 URL로 남긴다. 추측으로 판단한 부분은 출처가 없다고 적는다.
 `6. 산출물` 은 생성·변경한 파일 경로와 PR·커밋·리소스를 나열한다.
+**파일이 10개를 넘으면 개별 경로를 다 적지 않는다** — 디렉토리 단위로 묶어 개수와 함께 쓰고
+(`` `src/api/` — 12개 파일 ``), 그중 핵심 2~3개만 따로 짚는다.
+전체 목록은 커밋·PR 링크가 대신하므로 카드에 옮겨 적을 이유가 없다.
+디렉토리가 여러 개면 디렉토리마다 한 줄. 한 디렉토리에 1~2개뿐이면 묶지 말고 경로를 그대로 쓴다.
 
 `브랜치/커밋` 은 **`브랜치@짧은해시` 를 커밋 URL로 하이퍼링크**한다.
 텍스트 속성이 마크다운을 해석하므로 `[main@0e89e71](<원격URL>/commit/<전체해시>)` 로 쓴다.

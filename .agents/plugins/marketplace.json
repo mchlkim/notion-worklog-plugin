@@ -12,7 +12,7 @@
       "name": "notion-worklog-plugin",
       "source": ".",
       "description": "에이전트의 계획/실행/결과를 Notion 칸반에 기록합니다.",
-      "version": "1.9.2",
+      "version": "1.9.3",
       "category": "productivity",
       "tags": [
         "notion",
