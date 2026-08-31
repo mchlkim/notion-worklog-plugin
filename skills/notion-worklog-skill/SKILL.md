@@ -62,6 +62,9 @@ Notion MCP 서버(`https://mcp.notion.com/mcp`)의 도구를 쓴다.
   `/Users/me/dev/api-server` → `api-server`.
   **select 이므로 기존 옵션에 있으면 그대로 쓰고, 없으면 옵션을 먼저 추가**한다
   (기존 옵션을 전부 포함해서 `ALTER`). 규칙 전문은 [references/schema.md](references/schema.md).
+- `세션ID`: **`scripts/session-id.sh` 를 실행해 채운다.**
+  종료코드가 0이면 그 출력값을 넣고, 1이면 **비워 둔다** (추측한 값을 넣지 않는다).
+  Claude Code는 `CLAUDE_CODE_SESSION_ID` 환경변수를, Codex는 최신 롤아웃 파일명을 쓴다.
 - 본문: `assets/card-template.md` 의 `1. 계획` 섹션을 채워서 넣는다
 
 카드 URL을 기억해 뒀다가 이후 수정에 쓴다. 사용자에게 URL을 한 줄로 알린다.
@@ -81,6 +84,9 @@ Notion MCP 서버(`https://mcp.notion.com/mcp`)의 도구를 쓴다.
 
 `결과`(`성공`/`부분성공`/`실패`/`롤백`) · `완료일` · `브랜치/커밋` 을 채우고
 본문 `3. 결과` · `4. 인계 메모` · `5. 출처` · `6. 산출물` 을 작성한 뒤 `상태` = `검증`.
+
+`5. 출처` 는 참고한 문서·스펙을 제목과 URL로 남긴다. 추측으로 판단한 부분은 출처가 없다고 적는다.
+`6. 산출물` 은 생성·변경한 파일 경로와 PR·커밋·리소스를 나열한다.
 
 `브랜치/커밋` 은 **`브랜치@짧은해시` 를 커밋 URL로 하이퍼링크**한다.
 텍스트 속성이 마크다운을 해석하므로 `[main@0e89e71](<원격URL>/commit/<전체해시>)` 로 쓴다.
