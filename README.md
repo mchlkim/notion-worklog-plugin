@@ -274,7 +274,7 @@ Notion 텍스트 속성은 마크다운을 해석하므로 `[표시](URL)` 이 �
 원격 URL은 `git remote get-url origin` 을 웹 URL로 정규화해 만든다
 (`git@host:o/r.git` → `https://host/o/r`).
 
-카드 본문은 `1. 계획` / `2. 실행` / `3. 결과` / `4. 배운 점` 네 섹션 고정이다
+카드 본문은 `1. 계획` / `2. 실행` / `3. 결과` / `4. 인계 메모` / `5. 출처` / `6. 산출물` 여섯 섹션 고정이다
 ([`card-template.md`](skills/notion-worklog-skill/assets/card-template.md)).
 
 전체 속성 정의와 MCP 호출 예시는
