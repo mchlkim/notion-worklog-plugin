@@ -16,6 +16,8 @@
 | `작업경로` | text | repo 또는 cwd 절대경로 |
 | `브랜치/커밋` | text | `브랜치@짧은해시` + 커밋 URL 하이퍼링크 (아래 규칙). **다른 부연을 쓰지 않는다** |
 | `푸시` | checkbox | 커밋이 원격에 올라갔는지. `git branch -r --contains <해시>` 가 비어 있지 않으면 체크 |
+| `미해결` | checkbox | 남은 일이 있는 채로 완료·중단되면 체크. lint 와 Home view 가 추적 |
+| `관련 작업` | relation | 선행·후속·재작업 카드 연결. 값은 카드 페이지 URL 배열 — `"관련 작업": ["https://..."]` |
 | `세션ID` | text | 에이전트 세션/스레드 ID. **`scripts/session-id.sh` 로 구한다** — 실패하면 비워 둔다 |
 | `resume` | formula | **자동 계산 — 쓰지 말 것.** `세션ID`·`에이전트`·`작업경로` 에서 `cd <경로> && claude --resume <id>` (또는 `codex resume <id>`) 를 만든다. 로컬 트랜스크립트까지 확인하려면 `scripts/resume.sh <세션ID>` 를 쓴다 |
 | `참고링크` | url | PR, Jira, Confluence |
@@ -186,3 +188,16 @@ FROM "collection://<dataSourceId>"
 WHERE "작업경로" = '/Users/me/dev/api-server'
 ORDER BY "생성일시" DESC
 ```
+
+## 프로젝트 노트 DB
+
+카드가 쌓이면 종합되는 wiki 계층. 프로젝트당 1페이지.
+
+- 데이터소스: 환경변수 `NOTION_WORKLOG_PROJECT_NOTES_ID` → `worklog.config.json` 의
+  `notion.projectNotesDataSourceId` 순서로 찾는다.
+- 속성: `프로젝트`(title, 칸반 select 옵션명과 동일 문자열) · `한 줄 요약`(text) ·
+  `미해결 수`(number) · `최종 갱신`(자동)
+- 본문 섹션: `# 현재 상태` / `# 누적 개선점` / `# 미해결 질문` / `# 변경 이력`
+- 페이지 찾기: `notion-query-data-sources` 로
+  `SELECT url FROM "collection://<노트ID>" WHERE "프로젝트" = ?` — 없으면 생성한다.
+- 환류는 `update_content` append 로 한다. 노트 전체를 다시 쓰지 않는다.

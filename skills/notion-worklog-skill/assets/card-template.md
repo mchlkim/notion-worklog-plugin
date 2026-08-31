@@ -1,3 +1,11 @@
+# 0. 하네스
+
+- 에이전트/모델: (예: Claude Code / claude-opus-5 — 속성과 동일하게)
+- 스킬: `notion-worklog-skill` 및 이 작업에 쓴 다른 스킬
+- MCP: (예: Notion `mcp.notion.com/mcp` — 쓴 도구 이름까지)
+- CLI/도구: (예: git, terraform, kubectl, claude plugin)
+- 서브에이전트: 없으면 "없음"
+
 # 1. 계획
 
 ## 목표

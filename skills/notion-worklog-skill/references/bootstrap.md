@@ -26,6 +26,8 @@ CREATE TABLE (
   "작업경로" RICH_TEXT COMMENT '레포 또는 디렉토리 경로 (cwd)',
   "브랜치/커밋" RICH_TEXT COMMENT '브랜치@짧은해시 형식만. 커밋 URL 하이퍼링크. 부연 금지',
   "푸시" CHECKBOX COMMENT '커밋이 원격에 올라갔는지. git branch -r --contains <해시> 로 확인',
+  "미해결" CHECKBOX COMMENT '남은 일이 있는 채로 완료·중단된 카드에 체크',
+  "관련 작업" RELATION('<이 데이터소스 ID — 생성 후 ALTER 로 추가>') COMMENT '선행·후속 카드 연결. self-relation 이므로 DB 생성 후 별도 ADD COLUMN 으로 추가한다',
   "세션ID" RICH_TEXT COMMENT '에이전트 세션/스레드 ID — 원본 로그 추적용',
   "참고링크" URL,
   "ID" UNIQUE_ID PREFIX 'AGT',
@@ -72,3 +74,28 @@ ALTER COLUMN "프로젝트" SET SELECT('EDP':blue, 'IMK':orange, '사내':defaul
 
 - 보드에서 **카드가 없는 레인은 기본 숨김**이다. Notion UI의 보드 설정에서 "빈 그룹 표시"를 켜야 6개 레인이 다 보인다.
 - 생성 직후 기본 탭은 표 뷰다. 칸반을 기본으로 두려면 UI에서 탭을 드래그한다.
+
+## 프로젝트 노트 DB 생성
+
+칸반과 같은 부모 페이지 아래에 만든다.
+
+```sql
+CREATE TABLE (
+  "프로젝트" TITLE COMMENT '칸반의 프로젝트 select 옵션명과 동일 문자열. 프로젝트당 1페이지',
+  "한 줄 요약" RICH_TEXT,
+  "미해결 수" NUMBER,
+  "최종 갱신" LAST_EDITED_TIME
+)
+```
+
+생성된 데이터소스 ID를 `worklog.config.json` 의 `notion.projectNotesDataSourceId`
+(또는 환경변수 `NOTION_WORKLOG_PROJECT_NOTES_ID`)에 넣는다.
+
+`관련 작업` self-relation 은 칸반 DB 생성 후 데이터소스 ID를 받아 별도로 추가한다:
+
+```sql
+ADD COLUMN "관련 작업" RELATION('<칸반 데이터소스 ID>')
+```
+
+Home 페이지에는 linked view 세 개를 얹는다 — `지금 진행중`(상태 IN 계획·진행중),
+`사람 확인 대기`(상태=검증), `미해결 남은 카드`(미해결=TRUE).
