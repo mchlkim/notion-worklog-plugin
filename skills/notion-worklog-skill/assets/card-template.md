@@ -43,13 +43,18 @@
 # 7. 하네스
 
 ## 스킬
-`notion-worklog-skill` 및 이 작업에 쓴 다른 스킬.
+- `notion-worklog-skill`
+- 이 작업에 쓴 다른 스킬
 
 ## MCP
-서버와 쓴 도구 이름까지. 예: Notion `mcp.notion.com/mcp` — create-pages · update-page
+- Notion (`mcp.notion.com/mcp`)
+	- notion-create-pages
+	- notion-update-page
 
 ## CLI / 도구
-예: git, terraform, kubectl, claude plugin
+- git
+- terraform
+- claude plugin
 
 ## 서브에이전트
-없으면 "없음"
+- 없음
