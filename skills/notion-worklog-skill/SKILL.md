@@ -4,7 +4,7 @@ description: Use when starting, progressing, or finishing a multi-step task that
 compatibility: Requires a connected Notion MCP server (https://mcp.notion.com/mcp) with write access to the target database.
 metadata:
   author: mchlkim
-  version: "1.9.3"
+  version: "1.10.0"
 ---
 
 # Notion Worklog Skill
@@ -161,6 +161,25 @@ Notion에서 접기·링크·목차가 헤딩 단위로 동작하므로, 항목�
 **파일명·경로는 백틱으로 감싼다.** 맨 텍스트로 `schema.md` 를 쓰면 Notion이 도메인으로 보고
 `[schema.md](http://schema.md)` 로 자동 링크해 버린다. `` `schema.md` `` 처럼 인라인 코드로 쓰면
 그대로 남는다. `6. 산출물` 의 파일 목록에서 특히 자주 걸린다.
+
+**다른 카드를 번호로 참조할 때는 링크를 건다.** `AGT-50` 이라고만 적으면 클릭해서 갈 수 없고
+보드에서 ID로 다시 검색해야 한다. 마크다운 링크로 쓴다 — 표시는 번호만 남기고 URL을 붙인다.
+
+```markdown
+[AGT-50](https://app.notion.com/p/<페이지 id>)
+```
+
+URL은 데이터소스를 한 번 조회해 얻는다. 여러 건을 참조할 때는 한 번에 받아 두면 된다.
+
+```sql
+SELECT "userDefined:ID", "작업명", url FROM "collection://<dataSourceId>"
+```
+
+`5. 출처` 에서 이전 카드를 근거로 들 때, `2. 실행` 에서 선행 작업을 언급할 때 특히 자주 쓴다.
+`AGT-` 뿐 아니라 보드가 쓰는 다른 접두어에도 똑같이 적용한다.
+
+> 카드 사이의 관계가 **구조적**이면(선행 → 후속, 재작업) 본문 링크 대신 `관련 작업` relation 을 쓴다.
+> 산문 안의 언급은 링크, 관계 자체는 relation — 역할이 달라 둘은 공존한다.
 
 ## 프로젝트 노트 — 카드가 쌓이면 종합한다
 

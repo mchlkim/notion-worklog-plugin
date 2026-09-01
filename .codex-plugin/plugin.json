@@ -1,6 +1,6 @@
 {
   "name": "notion-worklog-plugin",
-  "version": "1.9.3",
+  "version": "1.10.0",
   "description": "Records an agent's plan, execution, and result to a shared Notion kanban database.",
   "author": {
     "name": "mchlkim"

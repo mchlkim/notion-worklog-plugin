@@ -21,7 +21,28 @@
 | `세션ID` | text | 에이전트 세션/스레드 ID. **`scripts/session-id.sh` 로 구한다** — 실패하면 비워 둔다 |
 | `resume` | formula | **자동 계산 — 쓰지 말 것.** `세션ID`·`에이전트`·`작업경로` 에서 `cd <경로> && claude --resume <id>` (또는 `codex resume <id>`) 를 만든다. 로컬 트랜스크립트까지 확인하려면 `scripts/resume.sh <세션ID>` 를 쓴다 |
 | `참고링크` | url | PR, Jira, Confluence |
-| `ID` `생성일시` `수정일시` | 자동 | 쓰지 말 것 |
+| `ID` `생성일시` `수정일시` | 자동 | 값은 쓰지 말 것. 다만 **본문에서 `AGT-50` 처럼 다른 카드를 참조할 때는 링크를 건다** (아래) |
+
+## 카드 번호 참조
+
+본문에서 다른 카드를 `AGT-50` 처럼 번호로 부를 때는 **해당 페이지로 링크를 건다.**
+번호만 적으면 죽은 참조가 되어 보드에서 다시 검색해야 한다.
+
+```markdown
+이전 웹 작업 [AGT-50](https://app.notion.com/p/3ceb714d4b7f81198acfc6e6972a1011) 의 콘텐츠를 재사용했다.
+```
+
+ID와 URL은 한 번의 조회로 함께 얻는다.
+
+```sql
+SELECT "userDefined:ID", "작업명", url
+FROM "collection://<dataSourceId>"
+WHERE "userDefined:ID" IN (45, 50)
+```
+
+- SQL 의 `userDefined:ID` 는 **접두어 없는 정수**(`50`)로 나오고, `notion-fetch` 는 `AGT-50` 형태로 준다.
+- `update_content` 로 넣은 마크다운 링크는 멘션으로 변환되지 않고 **링크 그대로 유지**된다.
+- 구조적 선후 관계는 `관련 작업` relation 이 담당한다. 본문 링크는 산문 안의 언급용이다.
 
 ## 작업명 규칙
 
